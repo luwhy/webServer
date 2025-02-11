@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <atomic>
 #include "base/CurrentThread.h"
+#include "log.h"
 namespace webs
 {
     class EventLoop
@@ -12,6 +13,8 @@ namespace webs
         EventLoop();
 
         EventLoop(EventLoop &e) = delete;
+
+        static EventLoop *getEventLoopOfCurrentThread();
 
         ~EventLoop();
 
