@@ -1,9 +1,8 @@
 #include "EventLoop.h"
-#include "Thread.h"
 namespace webs
 {
     __thread EventLoop *t_loopInThisThread = NULL;
-    EventLoop::EventLoop() : m_threadID(CurrentThread::tid())
+    EventLoop::EventLoop() : m_threadID(muduo::CurrentThread::tid())
     {
         this->m_looping = false;
     }

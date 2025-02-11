@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <atomic>
+#include "base/CurrentThread.h"
 namespace webs
 {
     class EventLoop
