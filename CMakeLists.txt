@@ -6,8 +6,8 @@ set(CMAKE_C_FLAGS "$ENV{CXXFLAGS} -rdynamic -O3 -fPIC -ggdb -std=c11 -Wall -Wno-
 
 find_package(Boost REQUIRED)
 
-include_directories(/app/sylar/include)
-link_directories(/app/sylar/lib)
+include_directories(apps/sylar/include)
+link_directories(apps/sylar/lib)
 find_library(YAMLCPP libyaml-cpp.a)
 
 
@@ -29,16 +29,16 @@ set(BASESRC
   src/base/TimeZone.cc
 )
 
-set(SYLAY src/sylar/config.cc src/sylar/log.cc src/sylar/thread.cc src/sylar/util.cc)
+set(SYLAR src/sylar/config.cc src/sylar/log.cc src/sylar/thread.cc src/sylar/util.cc)
 
 
 set(LIBSRC src/EventLoop.cc src/Channel.cc)
 
-add_library(webServer SHARED ${LIBSRC} ${BASESRC})
+add_library(webServer SHARED ${LIBSRC} ${BASESRC} ${SYLAR})
+
+
 
 add_executable(testWeb test/test.cc)
-
-#这2者后面都是库
 add_dependencies(testWeb webServer)
 target_link_libraries(testWeb webServer -lyaml-cpp)
 
