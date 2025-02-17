@@ -29,7 +29,10 @@ set(BASESRC
   src/base/TimeZone.cc
 )
 
-set(LIBSRC src/EventLoop.cc src/config.cc src/log.cc src/thread.cc src/util.cc)
+set(SYLAY src/sylar/config.cc src/sylar/log.cc src/sylar/thread.cc src/sylar/util.cc)
+
+
+set(LIBSRC src/EventLoop.cc src/Channel.cc)
 
 add_library(webServer SHARED ${LIBSRC} ${BASESRC})
 

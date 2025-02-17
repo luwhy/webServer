@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <atomic>
 #include "base/CurrentThread.h"
-#include "log.h"
+#include "sylar/log.h"
 namespace webs
 {
     class EventLoop

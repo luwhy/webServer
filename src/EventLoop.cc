@@ -33,7 +33,7 @@ namespace webs
         assertInLoopThread();
         m_looping = true;
         poll(NULL, 0, 5 * 1000);
-        SYLAR_LOG_INFO(g_logger) << "EventLoop " << this << "stop stopping";
+        SYLAR_LOG_INFO(g_logger) << "EventLoop " << this << " stop stopping";
         m_looping = false;
     }
 
