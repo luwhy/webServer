@@ -1,7 +1,9 @@
 #include "EventLoop.h"
 #include "base/Logging.h"
+#include "Channel.h"
 #include <poll.h>
 #include <iostream>
+#include "Poller.h"
 namespace webs
 {
     __thread EventLoop *t_loopInThisThread = nullptr;
@@ -43,6 +45,13 @@ namespace webs
         {
             abortNotInLoopThread();
         }
+    }
+
+    void EventLoop::updateChannel(Channel *channel)
+    {
+        assert(channel->ownerLoop() == this);
+        assertInLoopThread();
+        // poller->updateChannel(channel);
     }
 
     void EventLoop::abortNotInLoopThread()

@@ -3,6 +3,7 @@
 #include <functional>
 #include "sylar/log.h"
 #include "EventLoop.h"
+
 namespace webs
 {
     class Channel
@@ -26,6 +27,10 @@ namespace webs
             events_ |= kReadEvent;
             update();
         }
+        EventLoop *ownerLoop()
+        {
+            return loop_;
+        }
 
     private:
         void update();
@@ -42,6 +47,7 @@ namespace webs
         EventCallback readCallback_;
         EventCallback writeCallback_;
         EventCallback errorCallback_;
+        EventCallback closeCallback_;
     };
 }
 #endif
