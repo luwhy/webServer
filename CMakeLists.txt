@@ -32,8 +32,8 @@ set(BASESRC
 
 set(SYLAR src/sylar/config.cc src/sylar/log.cc src/sylar/thread.cc src/sylar/util.cc)
 
-
-set(LIBSRC src/EventLoop.cc src/Channel.cc src/Poller.cc)
+file(GLOB LIBSRC "src/*.cc")
+#set(LIBSRC src/EventLoop.cc src/Channel.cc src/Poller.cc)
 
 add_library(webServer SHARED ${LIBSRC} ${BASESRC} ${SYLAR})
 
