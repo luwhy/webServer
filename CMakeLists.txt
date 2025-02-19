@@ -41,11 +41,11 @@ add_library(webServer SHARED ${LIBSRC} ${BASESRC} ${SYLAR})
 
 add_executable(testWeb test/test.cc)
 add_dependencies(testWeb webServer)
-target_link_libraries(testWeb webServer -lyaml-cpp)
+target_link_libraries(testWeb webServer yaml-cpp)
 
 add_executable(testWeb2 test/test2.cc)
 add_dependencies(testWeb2 webServer)
-target_link_libraries(testWeb2 webServer -lyaml-cpp)
+target_link_libraries(testWeb2 webServer yaml-cpp)
 
 
 
