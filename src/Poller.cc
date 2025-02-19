@@ -6,13 +6,14 @@
 namespace webs
 {
     sylar::Logger::ptr g_logger_p = SYLAR_LOG_NAME("system");
-    Poller::Poller(std::shared_ptr<EventLoop> loop) : ownerLoop_(loop)
+    Poller::Poller(EventLoop *loop) : ownerLoop_(loop)
     {
     }
     Poller::~Poller()
     {
     }
-    muduo::Timestamp Poller::poll(int timeoutMs, std::shared_ptr<ChannelList> activeChannels)
+    // 调用poll获得当前活动的IO事件然后填入activatechannel中并返回时间
+    muduo::Timestamp Poller::poll(int timeoutMs, ChannelList *activeChannels)
     {
         // 成功时，poll() 返回结构体中 revents 域不为 0 的文件描述符个数；如果在超时前没有任何事件发生，poll()返回 0；失败返回-1
         // fd：每一个 pollfd 结构体指定了一个被监视的文件描述符，可以传递多个结构体，指示 poll() 监视多个文件描述符。
@@ -70,7 +71,7 @@ namespace webs
         }
     }
     // 遍历pollfds_,找出有活动的fd，把对应的channel填入activeChannels
-    void Poller::fillActivateChannels(int numEvents, std::shared_ptr<ChannelList> activeChannels) const
+    void Poller::fillActivateChannels(int numEvents, ChannelList *activeChannels) const
     {
         for (PollFdList::const_iterator pfd = pollfds_.begin(); pfd != pollfds_.end() && numEvents > 0; ++pfd)
         {

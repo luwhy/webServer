@@ -8,13 +8,16 @@ namespace webs
 {
     __thread EventLoop *t_loopInThisThread = nullptr;
     sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
-    EventLoop::EventLoop() : m_threadID(muduo::CurrentThread::tid())
+    const int kPollTimeMs = 10000;
+    EventLoop::EventLoop() : threadId_(muduo::CurrentThread::tid()), poller_(new Poller(this))
     {
-        SYLAR_LOG_INFO(g_logger) << "EventLoop created " << this << " in thread " << m_threadID;
-        this->m_looping = false;
+        SYLAR_LOG_INFO(g_logger) << "EventLoop created " << this << " in thread " << threadId_;
+        this->looping_.store(false);
+        this->quit_.store(false);
+
         if (t_loopInThisThread)
         {
-            SYLAR_LOG_ERROR(g_logger) << "Another EventLoop " << t_loopInThisThread << " exists in this thread " << m_threadID;
+            SYLAR_LOG_ERROR(g_logger) << "Another EventLoop " << t_loopInThisThread << " exists in this thread " << threadId_;
         }
         else
         {
@@ -25,18 +28,37 @@ namespace webs
 
     EventLoop::~EventLoop()
     {
-        assert(!m_looping);
+        assert(!looping_);
         t_loopInThisThread = nullptr;
     }
 
+    // 调用poller::poll()获得当前活动事件的Channel列表，然后依次调用每个Channel的handleEvent()函数
     void EventLoop::loop()
     {
-        assert(!m_looping);
+        assert(!looping_);
         assertInLoopThread();
-        m_looping = true;
-        poll(NULL, 0, 5 * 1000);
+        looping_.store(true);
+        quit_.store(false);
+        while (!quit_.load())
+        {
+            // 清空activChannels_
+            activChannels_.clear();
+            // poll获取当前活跃事件，填充入activChannels_
+            poller_->poll(kPollTimeMs, &activChannels_);
+            // 处理事件
+            for (ChannelList::iterator it = activChannels_.begin(); it != activChannels_.end(); ++it)
+            {
+                it->get()->handleEvent();
+            }
+        }
+
         SYLAR_LOG_INFO(g_logger) << "EventLoop " << this << " stop stopping";
-        m_looping = false;
+        looping_ = false;
+    }
+
+    void EventLoop::quit()
+    {
+        quit_.store(true);
     }
 
     void EventLoop::assertInLoopThread()
@@ -47,11 +69,11 @@ namespace webs
         }
     }
 
-    void EventLoop::updateChannel(Channel *channel)
+    void EventLoop::updateChannel(std::shared_ptr<Channel> channel)
     {
         assert(channel->ownerLoop() == this);
         assertInLoopThread();
-        // poller->updateChannel(channel);
+        poller_->updateChannel(channel);
     }
 
     void EventLoop::abortNotInLoopThread()

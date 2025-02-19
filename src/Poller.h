@@ -15,10 +15,10 @@ namespace webs
     {
     public:
         typedef std::vector<std::shared_ptr<Channel>> ChannelList;
-        Poller(std::shared_ptr<EventLoop> loop);
+        Poller(EventLoop *loop);
         Poller(Poller &poller) = delete;
         ~Poller();
-        muduo::Timestamp poll(int timeoutMs, std::shared_ptr<ChannelList> activeChannels);
+        muduo::Timestamp poll(int timeoutMs, ChannelList *activeChannels);
 
         void updateChannel(std::shared_ptr<Channel> channel);
 
@@ -28,9 +28,9 @@ namespace webs
         // pollfd有一个fd,一个fd记录对应一个channel，一个channel又记录自己在pollfds_中的下标
         typedef std::vector<struct pollfd> PollFdList;
         typedef std::map<int, std::shared_ptr<Channel>> ChannelMap;
-        void fillActivateChannels(int numEvents, std::shared_ptr<ChannelList> activeChannels) const;
+        void fillActivateChannels(int numEvents, ChannelList *activeChannels) const;
 
-        std::shared_ptr<EventLoop> ownerLoop_;
+        EventLoop *ownerLoop_;
         PollFdList pollfds_;
         ChannelMap channels_;
     };

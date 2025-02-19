@@ -23,20 +23,25 @@ namespace webs
 
         void loop();
 
+        void quit();
+
         void assertInLoopThread();
 
         bool isInLoopThread() const { return true; }
 
-        void updateChannel(Channel *channel);
+        void updateChannel(std::shared_ptr<Channel> channel);
 
     private:
         void abortNotInLoopThread();
 
-        std::atomic<bool> m_looping;
+        typedef std::vector<std::shared_ptr<Channel>> ChannelList;
+        std::atomic<bool> looping_;
+        std::atomic<bool> quit_;
 
-        const pid_t m_threadID;
+        const pid_t threadId_;
 
         std::unique_ptr<Poller> poller_;
+        ChannelList activChannels_;
     };
 }
 

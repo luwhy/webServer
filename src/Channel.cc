@@ -49,6 +49,6 @@ namespace webs
     }
     void Channel::update()
     {
-        loop_->updateChannel(this);
+        loop_->updateChannel(shared_from_this());
     }
 }

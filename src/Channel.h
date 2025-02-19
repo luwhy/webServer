@@ -6,7 +6,7 @@
 
 namespace webs
 {
-    class Channel
+    class Channel : public std::enable_shared_from_this<Channel>
     {
     public:
         typedef std::function<void()> EventCallback;
