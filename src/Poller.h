@@ -25,13 +25,14 @@ namespace webs
         void assertInLoopThread() { ownerLoop_->assertInLoopThread(); }
 
     private:
+        // pollfd有一个fd,一个fd记录对应一个channel，一个channel又记录自己在pollfds_中的下标
         typedef std::vector<struct pollfd> PollFdList;
         typedef std::map<int, std::shared_ptr<Channel>> ChannelMap;
         void fillActivateChannels(int numEvents, std::shared_ptr<ChannelList> activeChannels) const;
 
         std::shared_ptr<EventLoop> ownerLoop_;
         PollFdList pollfds_;
-        ChannelList channels_;
+        ChannelMap channels_;
     };
 }
 #endif

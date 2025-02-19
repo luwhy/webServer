@@ -20,7 +20,13 @@ namespace webs
 
         int fd() const { return fd_; }
         int events() const { return events_; }
+        int index() const { return index_; }
+        // 实际发生的事件
         void set_revents(int revt) { this->revents_ = revt; }
+        void set_index(int index)
+        {
+            this->index_ = index;
+        }
         bool isNoneEvent() const { return events_ == kNoneEvent; }
         void enableReading()
         {
@@ -42,7 +48,7 @@ namespace webs
         const int fd_;
         int events_;
         int revents_;
-        int index_; // used by poller
+        int index_; // used by poller,记录在pollfds_数组中的下标
 
         EventCallback readCallback_;
         EventCallback writeCallback_;
