@@ -20,15 +20,20 @@ namespace webs
         TimerId addTimer(const TimerCallback &cb, Timestamp when, double interval);
 
     private:
+        // 一组pair<Timestamp, Timer *>
         typedef std::pair<Timestamp, Timer *> Entry;
+
+        // entry的set
         typedef std::set<Entry> TimerList;
 
         void handleRead();
 
+        // 获取过期的timer
         std::vector<Entry> getExpired(Timestamp now);
 
         void reset(const std::vector<Entry> &expired, Timestamp now);
 
+        // 看看后续是否要unique_ptr
         bool insert(Timer *timer);
 
         EventLoop *loop_;

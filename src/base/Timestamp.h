@@ -48,10 +48,11 @@ namespace muduo
     }
 
     // default copy/assignment/dtor are Okay
-
+    // 转化为字符串格式
     string toString() const;
     string toFormattedString(bool showMicroseconds = true) const;
 
+    // 有效时间是microSecondsSinceEpoch_>0
     bool valid() const { return microSecondsSinceEpoch_ > 0; }
 
     // for internal usage.
@@ -63,7 +64,7 @@ namespace muduo
 
     ///
     /// Get time of now.
-    ///
+    /// 获取当前系统时间
     static Timestamp now();
     static Timestamp invalid()
     {
