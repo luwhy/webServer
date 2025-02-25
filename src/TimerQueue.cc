@@ -56,6 +56,15 @@ namespace webs
     }
     void TimerQueue::handleRead()
     {
+        loop_->assertInLoopThread();
+        Timestamp now(Timestamp::now());
+        detail::resetTimerfd(timerfd_, now);
+        std::vector<Entry> expired = getExpired(now);
+        for (auto it = expired.begin(); it != expired.end(); it++)
+        {
+            it->second->run();
+        }
+        reset(expired, now);
     }
 
     std::vector<TimerQueue::Entry> TimerQueue::getExpired(Timestamp now)
@@ -78,6 +87,28 @@ namespace webs
 
     void TimerQueue::reset(const std::vector<Entry> &expired, Timestamp now)
     {
+        Timestamp nextExpire;
+        for (std::vector<Entry>::const_iterator it = expired.begin(); it != expired.end(); ++it)
+        {
+            // 是否重复操作
+            if (it->second->repeat())
+            {
+                it->second->restart(now);
+                insert(it->second);
+            }
+            else
+            {
+                delete it->second;
+            }
+        }
+        if (!timers_.empty())
+        {
+            nextExpire = timers_.begin()->second->expiration();
+        }
+        if (nextExpire.valid())
+        {
+            detail::resetTimerfd(timerfd_, nextExpire);
+        }
     }
     bool TimerQueue::insert(Timer *timer)
     {

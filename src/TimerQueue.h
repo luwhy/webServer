@@ -14,6 +14,7 @@ namespace webs
     class TimerId;
     class TimerQueue
     {
+    public:
         TimerQueue(EventLoop *loop);
         TimerQueue(const TimerQueue &t) = delete;
         ~TimerQueue();
@@ -28,12 +29,25 @@ namespace webs
 
         void handleRead();
 
-        // 获取过期的timer
+        /**
+         * @brief 获取过期entry
+         *
+         * @param now
+         * @return std::vector<Entry>
+         */
         std::vector<Entry> getExpired(Timestamp now);
 
         void reset(const std::vector<Entry> &expired, Timestamp now);
 
         // 看看后续是否要unique_ptr
+
+        /**
+         * @brief 插入timer
+         *
+         * @param timer
+         * @return true
+         * @return false
+         */
         bool insert(Timer *timer);
 
         EventLoop *loop_;

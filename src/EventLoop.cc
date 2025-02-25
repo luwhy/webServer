@@ -4,12 +4,13 @@
 #include <poll.h>
 #include <iostream>
 #include "Poller.h"
+#include "TimerQueue.h"
 namespace webs
 {
     __thread EventLoop *t_loopInThisThread = nullptr;
     sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
     const int kPollTimeMs = 10000;
-    EventLoop::EventLoop() : threadId_(muduo::CurrentThread::tid()), poller_(new Poller(this))
+    EventLoop::EventLoop() : threadId_(muduo::CurrentThread::tid()), poller_(new Poller(this)), timerQueue_(new TimerQueue(this))
     {
         SYLAR_LOG_INFO(g_logger) << "EventLoop created " << this << " in thread " << threadId_;
         this->looping_.store(false);
@@ -59,6 +60,23 @@ namespace webs
     void EventLoop::quit()
     {
         quit_.store(true);
+    }
+
+    TimerId EventLoop::runAt(const Timestamp &time, const TimerCallback &cb)
+    {
+        return timerQueue_->addTimer(cb, time, 0.0);
+    }
+
+    TimerId EventLoop::runAfter(double delay, const TimerCallback &cb)
+    {
+        Timestamp time(addTime(Timestamp::now(), delay));
+        return runAt(time, cb);
+    }
+
+    TimerId EventLoop::runEvery(double interval, const TimerCallback &cb)
+    {
+        Timestamp time(addTime(Timestamp::now(), interval));
+        return timerQueue_->addTimer(cb, time, interval);
     }
 
     void EventLoop::assertInLoopThread()
