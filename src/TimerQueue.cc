@@ -21,6 +21,17 @@ namespace webs
         }
         struct timespec howMuchTimeFromNow(Timestamp when)
         {
+            int64_t microseconds = when.microSecondsSinceEpoch() - Timestamp::now().microSecondsSinceEpoch();
+            if (microseconds < 100)
+            {
+                microseconds = 100;
+            }
+            struct timespec ts;
+            ts.tv_sec = static_cast<time_t>(
+                microseconds / Timestamp::kMicroSecondsPerSecond);
+            ts.tv_nsec = static_cast<long>(
+                (microseconds % Timestamp::kMicroSecondsPerSecond) * 1000);
+            return ts;
         }
         // 重置timerfd
         void resetTimerfd(int timerfd, Timestamp expiration)
@@ -42,9 +53,15 @@ namespace webs
     TimerQueue::~TimerQueue()
     {
         ::close(timerfd_);
+        for (auto it = timers_.begin(); it != timers_.end(); ++it)
+        {
+
+            delete it->second;
+        }
     }
     TimerId TimerQueue::addTimer(const TimerCallback &cb, Timestamp when, double interval)
     {
+
         Timer *timer = new Timer(cb, when, interval);
         this->loop_->assertInLoopThread();
         bool earliestChanged = insert(timer);
