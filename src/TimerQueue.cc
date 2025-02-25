@@ -63,13 +63,18 @@ namespace webs
     {
 
         Timer *timer = new Timer(cb, when, interval);
-        this->loop_->assertInLoopThread();
+        this->loop_->runInloop(std::bind(&TimerQueue::addTimerInLoop, this, timer));
+        return TimerId(timer);
+    }
+    void TimerQueue::addTimerInLoop(Timer *timer)
+    {
+        loop_->assertInLoopThread();
         bool earliestChanged = insert(timer);
+
         if (earliestChanged)
         {
             detail::resetTimerfd(timerfd_, timer->expiration());
         }
-        return TimerId(timer);
     }
     void TimerQueue::handleRead()
     {

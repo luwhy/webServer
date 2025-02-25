@@ -111,12 +111,12 @@ namespace webs
         std::unique_ptr<TimerQueue> timerQueue_;
         Timestamp pollReturnTime_;
 
-        std::unique_ptr<Channel> wakeupChannel_;
         ChannelList activChannels_;
         // eventfd 对应的文件内容是一个 8 字节的数字，这个数字是 read/write 操作维护的计数。
         // 首先，write 的时候，累加计数，read 的时候读取计数，并且清零。
         // 返回值是读取或写入的字节数
         int wakeupFd_;
+        std::shared_ptr<Channel> wakeupChannel_;
         MutexLock mutex_;
         std::vector<std::function<void()>> pendingFunctors_;
     };

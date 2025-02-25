@@ -91,7 +91,7 @@ namespace webs
     {
         if (isInLoopThread())
         {
-            cb;
+            cb();
         }
         else
         {

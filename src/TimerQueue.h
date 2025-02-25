@@ -19,14 +19,23 @@ namespace webs
         TimerQueue(const TimerQueue &t) = delete;
         ~TimerQueue();
         /**
-         * @brief 如果interval大于0，则表示重复执行
+         * @brief 如果interval大于0，则表示重复执行，只负责转发
+         *
          *
          * @param cb
          * @param when
          * @param interval
          * @return TimerId
          */
+
         TimerId addTimer(const TimerCallback &cb, Timestamp when, double interval);
+
+        /**
+         * @brief负责执行修改定时器功能
+         *
+         * @param timer
+         */
+        void addTimerInLoop(Timer *timer);
 
     private:
         // 一组pair<Timestamp, Timer *>
