@@ -154,7 +154,7 @@ namespace sockets
     void fromHostPort(const char *ip, uint16_t port, sockaddr_in *addr)
     {
         addr->sin_family = AF_INET;
-        addr->sin_port = hostToNework16(port);
+        addr->sin_port = hostToNetwork16(port);
 
         if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0)
         {

@@ -34,7 +34,7 @@ namespace sockets
      * @param host16
      * @return uint16_t
      */
-    inline uint16_t hostToNework16(uint16_t host16)
+    inline uint16_t hostToNetwork16(uint16_t host16)
     {
         return htobe16(host16);
     }
