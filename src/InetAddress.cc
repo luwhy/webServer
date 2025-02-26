@@ -19,6 +19,9 @@ namespace webs
     {
         bzero(&addr_, sizeof(addr_));
         sockets::fromHostPort(ip.c_str(), port, &addr_);
+        // ::inet_pton(AF_INET, ip.c_str(), &addr_);
+        // addr_.sin_port = htobe16(port);
+        // addr_.sin_family = AF_INET;
     }
 
     InetAddress::InetAddress(const struct sockaddr_in &addr) : addr_(addr)
@@ -28,6 +31,12 @@ namespace webs
     {
         char buf[32];
         sockets::toHostPort(buf, sizeof buf, addr_);
+        // char host[INET_ADDRSTRLEN] = "INVALID";
+        // ::inet_ntop(AF_INET, &addr_, host, sizeof(addr_));
+
+        // uint16_t port = be16toh(addr_.sin_port);
+
+        // snprintf(buf, sizeof buf, "%s:%u", host, port);
         return buf;
     }
 }
