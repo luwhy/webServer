@@ -1,0 +1,41 @@
+#ifndef _ACCEPTOR__H_
+#define _ACCEPTOR__H_
+#include <functional>
+#include "Channel.h"
+#include "Socket.h"
+namespace webs
+{
+    class EventLoop;
+    class InetAddress;
+    class Acceptor
+    {
+    public:
+        typedef std::function<void(int sockfd, const InetAddress)> NewConnnectionCallback;
+        Acceptor(EventLoop *loop, const InetAddress &listenAddr);
+        Acceptor(const Acceptor &a) = delete;
+
+        void setNewConnectionCallback(const NewConnnectionCallback &cb)
+        {
+            newConnectionCallback_ = cb;
+        }
+
+        bool listenning() const { return listenning_; }
+
+        void listen();
+
+    private:
+        void hanleRead();
+
+        EventLoop *loop_;
+
+        Socket acceptSocket_;
+
+        Channel acceptChannel_;
+
+        NewConnnectionCallback newConnectionCallback_;
+
+        bool listenning_;
+    };
+
+}
+#endif
