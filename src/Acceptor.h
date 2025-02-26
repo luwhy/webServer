@@ -14,6 +14,11 @@ namespace webs
         Acceptor(EventLoop *loop, const InetAddress &listenAddr);
         Acceptor(const Acceptor &a) = delete;
 
+        /**
+         * @brief 设置连接回调
+         *
+         * @param cb
+         */
         void setNewConnectionCallback(const NewConnnectionCallback &cb)
         {
             newConnectionCallback_ = cb;
