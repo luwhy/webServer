@@ -6,6 +6,7 @@ namespace webs
 {
     class InetAddress
     {
+    public:
         explicit InetAddress(uint16_t port);
 
         InetAddress(const std::string &ip, uint16_t port);
