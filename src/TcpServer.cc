@@ -29,7 +29,8 @@ namespace webs
         }
         if (!acceptor_->listenning())
         {
-            loop_->runInloop(std::bind(&Acceptor::listen, acceptor_));
+            // bind里面这个对象，不能施展智能指针
+            loop_->runInloop(std::bind(&Acceptor::listen, acceptor_.get()));
         }
     }
     void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
