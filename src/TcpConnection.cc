@@ -40,6 +40,16 @@ namespace webs
         connectionCallback_(shared_from_this());
     }
 
+    void TcpConnection::connectDestoried()
+    {
+        this->loop_->assertInLoopThread();
+        assert(state_ == kConnecting);
+        this->setState(kDisconnected);
+        channel_->disableAll();
+        connectionCallback_(shared_from_this());
+        loop_->removeChannel(channel_.get());
+    }
+
     /**
      * @brief read回调
      *

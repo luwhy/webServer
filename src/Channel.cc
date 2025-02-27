@@ -11,12 +11,19 @@ namespace webs
                                                       fd_(fd),
                                                       events_(0),
                                                       revents_(0),
-                                                      index_(-1)
+                                                      index_(-1),
+                                                      eventHandling_(false)
     {
+    }
+
+    Channel::~Channel()
+    {
+        assert(!eventHandling_);
     }
     // 根据revents_的值分别调用不同回调
     void Channel::handleEvent()
     {
+        eventHandling_ = true;
         if (revents_ & POLLNVAL)
             SYLAR_LOG_WARN(g_logger_c) << "Channel::handle_event() POLLNVAL";
         if ((revents_ & POLLHUP) && !(revents_ & POLLIN))
@@ -46,6 +53,7 @@ namespace webs
                 writeCallback_();
             }
         }
+        eventHandling_ = false;
     }
     void Channel::update()
     {

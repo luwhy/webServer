@@ -12,11 +12,13 @@ namespace webs
         typedef std::function<void()> EventCallback;
         Channel(EventLoop *loop, int fd);
         Channel(Channel &c) = delete;
+        ~Channel();
 
         void handleEvent();
         void setReadCallback(const EventCallback &cb) { this->readCallback_ = cb; }
         void setWriteCallback(const EventCallback &cb) { this->writeCallback_ = cb; }
         void setErrorCallback(const EventCallback &cb) { this->errorCallback_ = cb; }
+        void setCloseCallback(const EventCallback &cb) { this->closeCallback_ = cb; }
 
         int fd() const { return fd_; }
         int events() const { return events_; }
@@ -49,7 +51,7 @@ namespace webs
         int events_;
         int revents_;
         int index_; // used by poller,记录在pollfds_数组中的下标
-
+        bool eventHandling_;
         EventCallback readCallback_;
         EventCallback writeCallback_;
         EventCallback errorCallback_;

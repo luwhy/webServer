@@ -8,7 +8,12 @@
 #include "Logging.h"
 namespace webs
 {
-
+    /**
+     * @brief 直接供给外部使用，设置好callback后即可start
+     *
+     * @param loop
+     * @param listenAddr
+     */
     TcpServer::TcpServer(EventLoop *loop, const InetAddress &listenAddr) : loop_(CHECK_NOTNULL(loop)),
                                                                            name_(listenAddr.toHostPort()),
                                                                            acceptor_(new Acceptor(loop, listenAddr)),
@@ -29,7 +34,7 @@ namespace webs
         }
         if (!acceptor_->listenning())
         {
-            // bind里面这个对象，不能施展智能指针
+            // bind里面这个对象，不能使用智能指针
             loop_->runInloop(std::bind(&Acceptor::listen, acceptor_.get()));
         }
     }

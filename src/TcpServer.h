@@ -29,7 +29,7 @@ namespace webs
             connectionCallback_ = cb;
         }
 
-        void setMessageConnection(const MessageCallback &cb)
+        void setMessageCallback(const MessageCallback &cb)
         {
             messageCallbacak_ = cb;
         }

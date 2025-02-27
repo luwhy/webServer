@@ -51,6 +51,9 @@ add_executable(testWeb7 test/test7.cc)
 add_dependencies(testWeb7 webServer)
 target_link_libraries(testWeb7 webServer yaml-cpp)
 
+add_executable(testWeb8 test/test8.cc)
+add_dependencies(testWeb8 webServer)
+target_link_libraries(testWeb8 webServer yaml-cpp)
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)

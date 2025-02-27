@@ -36,17 +36,29 @@ namespace webs
             messageCallback_ = cb;
         }
 
+        void setCloseCallback(const CloseCallback &cb)
+        {
+            closeCallback_ = cb;
+        }
+
         /**
          * @brief 当tcp接收一个新的链接时，只应用一次
          *
          */
         void connectEstablished();
 
+        /**
+         * @brief 当tcpsever把它移除map后调用，只调用一次
+         *
+         */
+        void connectDestoried();
+
     private:
         enum StateE
         {
             kConnecting,
-            kConnected
+            kConnected,
+            kDisconnected
         };
         EventLoop *loop_;
         std::string name_;
@@ -59,6 +71,7 @@ namespace webs
 
         ConnectionCallback connectionCallback_;
         MessageCallback messageCallback_;
+        CloseCallback closeCallback_;
 
     private:
         void setState(StateE s) { state_ = s; }
