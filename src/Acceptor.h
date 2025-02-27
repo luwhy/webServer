@@ -35,7 +35,7 @@ namespace webs
 
         Socket acceptSocket_;
 
-        Channel acceptChannel_;
+        std::shared_ptr<Channel> acceptChannel_;
 
         NewConnnectionCallback newConnectionCallback_;
 

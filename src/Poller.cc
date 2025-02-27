@@ -17,6 +17,10 @@ namespace webs
     {
         // 成功时，poll() 返回结构体中 revents 域不为 0 的文件描述符个数；如果在超时前没有任何事件发生，poll()返回 0；失败返回-1
         // fd：每一个 pollfd 结构体指定了一个被监视的文件描述符，可以传递多个结构体，指示 poll() 监视多个文件描述符。
+        for (auto i : pollfds_)
+        {
+            SYLAR_LOG_DEBUG(g_logger_p) << i.fd;
+        }
         int numEvents = ::poll(&(*pollfds_.begin()), pollfds_.size(), timeoutMs);
         // 也可以这样写，vector.data()获取首元素指针
         // int numEvents = ::poll(pollfds_.data(), pollfds_.size(), timeoutMs);
@@ -47,7 +51,7 @@ namespace webs
             struct pollfd pfd;
             pfd.fd = channel->fd();
             pfd.events = static_cast<short>(channel->events());
-            pfd.revents = 0;
+            // pfd.revents = 0;
             pollfds_.push_back(pfd);
             int idx = static_cast<int>(pollfds_.size()) - 1;
             channel->set_index(idx);
@@ -63,7 +67,7 @@ namespace webs
             struct pollfd &pfd = pollfds_[idx];
             assert(pfd.fd == channel->fd() || pfd.fd == -1);
             pfd.events = static_cast<short>(channel->events());
-            pfd.revents = 0;
+            // pfd.revents = 0;
             if (channel->isNoneEvent())
             {
                 pfd.fd = -1;

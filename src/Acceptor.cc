@@ -7,13 +7,13 @@
 namespace webs
 {
     Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr) : loop_(loop),
-                                                                         acceptSocket_(Socket(sockets::createNonBlockingOrDie())),
-                                                                         acceptChannel_(loop_, acceptSocket_.fd()),
+                                                                         acceptSocket_(sockets::createNonBlockingOrDie()),
+                                                                         acceptChannel_(new Channel(loop_, acceptSocket_.fd())),
                                                                          listenning_(false)
     {
         acceptSocket_.setReuseAddr(true);
         acceptSocket_.bindAddress(listenAddr);
-        acceptChannel_.setReadCallback(std::bind(&Acceptor::hanleRead, this));
+        acceptChannel_->setReadCallback(std::bind(&Acceptor::hanleRead, this));
     }
 
     void Acceptor::listen()
@@ -21,7 +21,7 @@ namespace webs
         loop_->assertInLoopThread();
         listenning_ = true;
         acceptSocket_.listen();
-        acceptChannel_.enableReading();
+        acceptChannel_->enableReading();
     }
 
     void Acceptor::hanleRead()

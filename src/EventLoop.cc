@@ -22,7 +22,7 @@ namespace webs
 
     __thread EventLoop *t_loopInThisThread = nullptr;
     sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
-    const int kPollTimeMs = 10000;
+    const int kPollTimeMs = 1000;
     EventLoop::EventLoop() : threadId_(muduo::CurrentThread::tid()),
                              poller_(new Poller(this)),
                              timerQueue_(new TimerQueue(this)),

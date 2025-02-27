@@ -32,13 +32,13 @@ namespace sockets
     {
         int flags = ::fcntl(sockfd, F_GETFL, 0);
         flags |= O_NONBLOCK;
-        int ret = ::fcntl(sockfd, F_SETFL, flags);
+        ::fcntl(sockfd, F_SETFL, flags);
 
         // 获得close-on-exec旗标,F_GETFD
         flags = ::fcntl(sockfd, F_GETFD, 0);
         flags |= FD_CLOEXEC;
         // 设置close-on-exec旗标F_SETFD
-        ret = ::fcntl(sockfd, F_SETFD, flags);
+        ::fcntl(sockfd, F_SETFD, flags);
     }
 
     int createNonBlockingOrDie()
