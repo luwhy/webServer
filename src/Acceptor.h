@@ -29,7 +29,7 @@ namespace webs
         void listen();
 
     private:
-        void hanleRead();
+        void handleRead();
 
         EventLoop *loop_;
 

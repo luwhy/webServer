@@ -6,6 +6,8 @@
 #include "Poller.h"
 #include "TimerQueue.h"
 #include <sys/eventfd.h>
+
+#include "Logging.h"
 namespace webs
 {
     static int createEventfd()
@@ -21,7 +23,7 @@ namespace webs
     }
 
     __thread EventLoop *t_loopInThisThread = nullptr;
-    sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
+
     const int kPollTimeMs = 1000;
     EventLoop::EventLoop() : threadId_(muduo::CurrentThread::tid()),
                              poller_(new Poller(this)),
@@ -29,13 +31,13 @@ namespace webs
                              wakeupFd_(createEventfd()),
                              wakeupChannel_(new Channel(this, wakeupFd_))
     {
-        SYLAR_LOG_INFO(g_logger) << "EventLoop created " << this << " in thread " << threadId_;
+        SYLAR_LOG_INFO(g_logger_src) << "EventLoop created " << this << " in thread " << threadId_;
         this->looping_.store(false);
         this->quit_.store(false);
         this->callingPendingFunctors_.store(false);
         if (t_loopInThisThread)
         {
-            SYLAR_LOG_ERROR(g_logger) << "Another EventLoop " << t_loopInThisThread << " exists in this thread " << threadId_;
+            SYLAR_LOG_ERROR(g_logger_src) << "Another EventLoop " << t_loopInThisThread << " exists in this thread " << threadId_;
         }
         else
         {
@@ -74,7 +76,7 @@ namespace webs
             dopendingFunctors();
         }
 
-        SYLAR_LOG_INFO(g_logger) << "EventLoop " << this << " stop stopping";
+        SYLAR_LOG_INFO(g_logger_src) << "EventLoop " << this << " stop stopping";
         looping_ = false;
     }
 
@@ -156,9 +158,9 @@ namespace webs
 
     void EventLoop::abortNotInLoopThread()
     {
-        SYLAR_LOG_INFO(g_logger) << "EventLoop::abortNotInLoopThread - EventLoop " << this
-                                 << " was created in threadId_ = " << threadId_
-                                 << ", current thread id = " << CurrentThread::tid();
+        SYLAR_LOG_INFO(g_logger_src) << "EventLoop::abortNotInLoopThread - EventLoop " << this
+                                     << " was created in threadId_ = " << threadId_
+                                     << ", current thread id = " << CurrentThread::tid();
     }
 
     void EventLoop::handleRead()
@@ -167,7 +169,7 @@ namespace webs
         ssize_t n = ::read(wakeupFd_, &one, sizeof one);
         if (n != sizeof one)
         {
-            SYLAR_LOG_ERROR(g_logger) << "EventLoop::handleRead() reads " << n << " bytes instead of 8";
+            SYLAR_LOG_ERROR(g_logger_src) << "EventLoop::handleRead() reads " << n << " bytes instead of 8";
         }
     }
 

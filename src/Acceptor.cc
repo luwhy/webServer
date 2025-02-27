@@ -13,7 +13,7 @@ namespace webs
     {
         acceptSocket_.setReuseAddr(true);
         acceptSocket_.bindAddress(listenAddr);
-        acceptChannel_->setReadCallback(std::bind(&Acceptor::hanleRead, this));
+        acceptChannel_->setReadCallback(std::bind(&Acceptor::handleRead, this));
     }
 
     void Acceptor::listen()
@@ -24,7 +24,7 @@ namespace webs
         acceptChannel_->enableReading();
     }
 
-    void Acceptor::hanleRead()
+    void Acceptor::handleRead()
     {
         loop_->assertInLoopThread();
         InetAddress peerAddr(0);

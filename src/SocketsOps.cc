@@ -8,10 +8,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <boost/implicit_cast.hpp>
+#include "Callbacks.h"
+#include "Logging.h"
 namespace sockets
 {
     typedef struct sockaddr SA;
-    sylar::Logger::ptr s_logger_so = SYLAR_LOG_NAME("system");
 
     const SA *sockaddr_cast(const struct sockaddr_in *addr)
     {
@@ -47,13 +48,13 @@ namespace sockets
         int sockfd = ::socket(AF_INET, SOCK_STREAM, IPPORT_TCP);
         if (sockfd < 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << "sockets::createNonblockingOrDie";
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets::createNonblockingOrDie";
         }
 #else
         int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
         if (sockfd < 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << "sockets::createNonblockingOrDie";
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets::createNonblockingOrDie";
         }
 #endif
         return sockfd;
@@ -63,7 +64,7 @@ namespace sockets
         int ret = ::bind(sockfd, sockaddr_cast(&addr), sizeof(addr));
         if (ret < 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << "sockets::bindOrDie";
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets::bindOrDie";
         }
     }
     void listenOrDie(int sockfd)
@@ -71,7 +72,7 @@ namespace sockets
         int ret = ::listen(sockfd, SOMAXCONN);
         if (ret < 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << "sockets:: listenOrDie";
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets:: listenOrDie";
         }
     }
     /**
@@ -112,10 +113,10 @@ namespace sockets
             case ENOMEM:
             case ENOTSOCK:
             case EOPNOTSUPP:
-                SYLAR_LOG_ERROR(s_logger_so) << " unexpected error of ::accept " << savedErrno;
+                SYLAR_LOG_ERROR(g_logger_src) << " unexpected error of ::accept " << savedErrno;
                 break;
             default:
-                SYLAR_LOG_ERROR(s_logger_so) << "unknown error of ::accept " << savedErrno;
+                SYLAR_LOG_ERROR(g_logger_src) << "unknown error of ::accept " << savedErrno;
                 break;
             }
         }
@@ -126,7 +127,7 @@ namespace sockets
         int ret = ::close(sockfd);
         if (ret < 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << " socket close error";
+            SYLAR_LOG_ERROR(g_logger_src) << " socket close error";
         }
     }
     /**
@@ -158,7 +159,19 @@ namespace sockets
 
         if (::inet_pton(AF_INET, ip, &addr->sin_addr) <= 0)
         {
-            SYLAR_LOG_ERROR(s_logger_so) << "sockets::fromHostPort";
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets::fromHostPort";
         }
+    }
+
+    struct sockaddr_in getLocalAddr(int sockfd)
+    {
+        struct sockaddr_in localAddr;
+        bzero(&localAddr, sizeof localAddr);
+        socklen_t addrlen = sizeof(localAddr);
+        if (::getsockname(sockfd, sockaddr_cast(&localAddr), &addrlen) < 0)
+        {
+            SYLAR_LOG_ERROR(g_logger_src) << "sockets::getLocalAddr";
+        }
+        return localAddr;
     }
 }

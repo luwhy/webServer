@@ -3,9 +3,10 @@
 #include <assert.h>
 #include "Channel.h"
 #include "sylar/log.h"
+#include "Logging.h"
 namespace webs
 {
-    sylar::Logger::ptr g_logger_p = SYLAR_LOG_NAME("system");
+
     Poller::Poller(EventLoop *loop) : ownerLoop_(loop)
     {
     }
@@ -19,7 +20,7 @@ namespace webs
         // fd：每一个 pollfd 结构体指定了一个被监视的文件描述符，可以传递多个结构体，指示 poll() 监视多个文件描述符。
         for (auto i : pollfds_)
         {
-            SYLAR_LOG_DEBUG(g_logger_p) << i.fd;
+            SYLAR_LOG_DEBUG(g_logger_src) << i.fd;
         }
         int numEvents = ::poll(&(*pollfds_.begin()), pollfds_.size(), timeoutMs);
         // 也可以这样写，vector.data()获取首元素指针
@@ -27,23 +28,23 @@ namespace webs
         muduo::Timestamp now(muduo::Timestamp::now());
         if (numEvents > 0)
         {
-            SYLAR_LOG_INFO(g_logger_p) << numEvents << " events happended";
+            SYLAR_LOG_INFO(g_logger_src) << numEvents << " events happended";
             fillActivateChannels(numEvents, activeChannels);
         }
         else if (numEvents == 0)
         {
-            SYLAR_LOG_INFO(g_logger_p) << " nothing happend";
+            SYLAR_LOG_INFO(g_logger_src) << " nothing happend";
         }
         else
         {
-            SYLAR_LOG_INFO(g_logger_p) << " poller::poll()";
+            SYLAR_LOG_INFO(g_logger_src) << " poller::poll()";
         }
         return now;
     }
     void Poller::updateChannel(std::shared_ptr<Channel> channel)
     {
         assertInLoopThread();
-        SYLAR_LOG_INFO(g_logger_p) << "fd= " << channel->fd() << " events= " << channel->events();
+        SYLAR_LOG_INFO(g_logger_src) << "fd= " << channel->fd() << " events= " << channel->events();
         if (channel->index() < 0)
         {
             // 这里不在channels_中,新增
