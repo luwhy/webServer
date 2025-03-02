@@ -146,6 +146,13 @@ namespace webs
         poller_->updateChannel(channel);
     }
 
+    void EventLoop::removeChannel(std::shared_ptr<Channel> channel)
+    {
+        assert(channel->ownerLoop() == this);
+        assertInLoopThread();
+        poller_->removeChannel(channel);
+    }
+
     void EventLoop::wakeup()
     {
         uint64_t one = 1;

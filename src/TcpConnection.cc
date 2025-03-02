@@ -10,6 +10,7 @@
 
 #include <functional>
 #include "Logging.h"
+#include "SocketsOps.h"
 namespace webs
 {
     // sylar::Logger::ptr logger_t = SYLAR_LOG_NAME("system");
@@ -47,7 +48,7 @@ namespace webs
         this->setState(kDisconnected);
         channel_->disableAll();
         connectionCallback_(shared_from_this());
-        loop_->removeChannel(channel_.get());
+        loop_->removeChannel(channel_);
     }
 
     /**
@@ -58,6 +59,25 @@ namespace webs
     {
         char buf[UINT16_MAX];
         ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
-        messageCallback_(shared_from_this(), buf, n);
+        if (n > 0)
+            messageCallback_(shared_from_this(), buf, n);
+        else if (n == 0)
+            handleClose();
+        else
+            handleError();
+    }
+    void TcpConnection::handleClose()
+    {
+        loop_->assertInLoopThread();
+        SYLAR_LOG_INFO(g_logger_src) << "TcpConnection::handleClose state = " << state_;
+        assert(state_ == kConnected);
+        channel_->disableAll();
+        closeCallback_(shared_from_this());
+    }
+    void TcpConnection::handleError()
+    {
+        int err = sockets::getSocketError(channel_->fd());
+        SYLAR_LOG_ERROR(g_logger_src) << "TcpConnection::handleError [" << name_
+                                      << "] - SO_ERROR = " << err << " " << strerror_tl(err);
     }
 }

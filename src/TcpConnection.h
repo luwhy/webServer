@@ -77,6 +77,10 @@ namespace webs
         void setState(StateE s) { state_ = s; }
 
         void handleRead();
+
+        void handleClose();
+
+        void handleError();
     };
 }
 #endif

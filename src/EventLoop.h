@@ -87,6 +87,8 @@ namespace webs
 
         void updateChannel(std::shared_ptr<Channel> channel);
 
+        void removeChannel(std::shared_ptr<Channel> channel);
+
         void wakeup();
 
     private:

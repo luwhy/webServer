@@ -75,6 +75,37 @@ namespace webs
             }
         }
     }
+    void Poller::removeChannel(std::shared_ptr<Channel> channel)
+    {
+        assertInLoopThread();
+        SYLAR_LOG_INFO(g_logger_src) << "fd = " << channel->fd();
+        assert(channels_.find(channel->fd()) != channels_.end());
+        assert(channels_[channel->fd()] == channel);
+        assert(channel->isNoneEvent());
+        int idex = channel->index();
+        assert(0 <= idex && idex < static_cast<int>(pollfds_.size()));
+        const struct pollfd &pfd = pollfds_[idex];
+        (void)pfd;
+        assert(pfd.fd == -channel->fd() - 1 && pfd.events == channel->events());
+        size_t n = channels_.erase(channel->fd());
+        assert(n == 1);
+        (void)n;
+        if (implicit_cast<size_t>(idex) == pollfds_.size() - 1)
+        {
+            pollfds_.pop_back();
+        }
+        else
+        {
+            int channelAtEnd = pollfds_.back().fd;
+            iter_swap(pollfds_.begin() + idex, pollfds_.end() - 1);
+            if (channelAtEnd < 0)
+            {
+                channelAtEnd = -channelAtEnd - 1;
+            }
+            channels_[channelAtEnd]->set_index(idex);
+            pollfds_.pop_back();
+        }
+    }
     // 遍历pollfds_,找出有活动的fd，把对应的channel填入activeChannels
     void Poller::fillActivateChannels(int numEvents, ChannelList *activeChannels) const
     {

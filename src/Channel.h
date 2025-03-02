@@ -39,6 +39,11 @@ namespace webs
         {
             return loop_;
         }
+        void disableAll()
+        {
+            events_ = kNoneEvent;
+            update();
+        }
 
     private:
         void update();
