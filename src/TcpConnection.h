@@ -4,6 +4,7 @@
 #include <any>
 #include "Callbacks.h"
 #include "InetAddress.h"
+#include "Buffer.h"
 namespace webs
 {
     class Channel;
@@ -73,10 +74,12 @@ namespace webs
         MessageCallback messageCallback_;
         CloseCallback closeCallback_;
 
+        Buffer inputBuffer_;
+
     private:
         void setState(StateE s) { state_ = s; }
 
-        void handleRead();
+        void handleRead(Timestamp receiveTime);
 
         void handleClose();
 

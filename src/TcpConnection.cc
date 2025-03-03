@@ -24,7 +24,7 @@ namespace webs
     {
         SYLAR_LOG_DEBUG(g_logger_src) << "TcpConnection::ctor[" << name_ << "] at " << this
                                       << " fd=" << sockfd;
-        channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
+        channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this, std::placeholders::_1));
         channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
         channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
         channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
@@ -58,12 +58,13 @@ namespace webs
      * @brief read回调
      *
      */
-    void TcpConnection::handleRead()
+    void TcpConnection::handleRead(Timestamp receiveTime)
     {
-        char buf[UINT16_MAX];
-        ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
+        int savedErrno = 0;
+        // ssize_t n = ::read(channel_->fd(), buf, sizeof buf);
+        ssize_t n = inputBuffer_.readfd(channel_->fd(), &savedErrno);
         if (n > 0)
-            messageCallback_(shared_from_this(), buf, n);
+            messageCallback_(shared_from_this(), &inputBuffer_, receiveTime);
         else if (n == 0)
             handleClose();
         else

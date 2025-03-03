@@ -3,19 +3,20 @@
 #include <functional>
 #include "sylar/log.h"
 #include "EventLoop.h"
-
+#include "base/Timestamp.h"
 namespace webs
 {
     class Channel : public std::enable_shared_from_this<Channel>
     {
     public:
         typedef std::function<void()> EventCallback;
+        typedef std::function<void(muduo::Timestamp)> ReadEventCallback;
         Channel(EventLoop *loop, int fd);
         Channel(Channel &c) = delete;
         ~Channel();
 
         void handleEvent();
-        void setReadCallback(const EventCallback &cb) { this->readCallback_ = cb; }
+        void setReadCallback(const ReadEventCallback &cb) { this->readCallback_ = cb; }
         void setWriteCallback(const EventCallback &cb) { this->writeCallback_ = cb; }
         void setErrorCallback(const EventCallback &cb) { this->errorCallback_ = cb; }
         void setCloseCallback(const EventCallback &cb) { this->closeCallback_ = cb; }
@@ -57,7 +58,7 @@ namespace webs
         int revents_;
         int index_; // used by poller,记录在pollfds_数组中的下标
         bool eventHandling_;
-        EventCallback readCallback_;
+        ReadEventCallback readCallback_;
         EventCallback writeCallback_;
         EventCallback errorCallback_;
         EventCallback closeCallback_;
