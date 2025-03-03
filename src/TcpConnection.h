@@ -81,6 +81,8 @@ namespace webs
         void handleClose();
 
         void handleError();
+
+        void handleWrite();
     };
 }
 #endif

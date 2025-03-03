@@ -52,7 +52,7 @@ namespace webs
             struct pollfd pfd;
             pfd.fd = channel->fd();
             pfd.events = static_cast<short>(channel->events());
-            // pfd.revents = 0;
+            pfd.revents = 0;
             pollfds_.push_back(pfd);
             int idx = static_cast<int>(pollfds_.size()) - 1;
             channel->set_index(idx);
@@ -66,12 +66,12 @@ namespace webs
             int idx = channel->index();
             assert(0 <= idx && idx < static_cast<int>(pollfds_.size()));
             struct pollfd &pfd = pollfds_[idx];
-            assert(pfd.fd == channel->fd() || pfd.fd == -1);
+            assert(pfd.fd == channel->fd() || pfd.fd == -channel->fd() - 1);
             pfd.events = static_cast<short>(channel->events());
-            // pfd.revents = 0;
+            pfd.revents = 0;
             if (channel->isNoneEvent())
             {
-                pfd.fd = -1;
+                pfd.fd = -channel->fd() - 1;
             }
         }
     }

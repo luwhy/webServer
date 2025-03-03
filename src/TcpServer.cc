@@ -55,6 +55,16 @@ namespace webs
         connections_[connName] = conn;
         conn->setConnectionCallback(this->connectionCallback_);
         conn->setMessageCallback(this->messageCallbacak_);
+        conn->setCloseCallback(std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
         conn->connectEstablished();
+    }
+    void TcpServer::removeConnection(const TcpConnectionPtr &conn)
+    {
+        loop_->assertInLoopThread();
+        SYLAR_LOG_INFO(g_logger_src) << "TcpServer::removeConnection [" << name_
+                                     << "] - connection " << conn->name();
+        size_t n = connections_.erase(conn->name());
+        assert(n == 1);
+        loop_->queueInLoop(std::bind(&TcpConnection::connectDestoried, conn));
     }
 }

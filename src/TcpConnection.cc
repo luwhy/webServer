@@ -25,6 +25,9 @@ namespace webs
         SYLAR_LOG_DEBUG(g_logger_src) << "TcpConnection::ctor[" << name_ << "] at " << this
                                       << " fd=" << sockfd;
         channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
+        channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
+        channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
+        channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
     }
 
     TcpConnection::~TcpConnection()
@@ -79,5 +82,8 @@ namespace webs
         int err = sockets::getSocketError(channel_->fd());
         SYLAR_LOG_ERROR(g_logger_src) << "TcpConnection::handleError [" << name_
                                       << "] - SO_ERROR = " << err << " " << strerror_tl(err);
+    }
+    void TcpConnection::handleWrite()
+    {
     }
 }
