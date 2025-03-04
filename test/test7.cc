@@ -4,7 +4,7 @@
 #include "../src/SocketsOps.h"
 #include <stdio.h>
 
-void newConnection(int sockfd, const webs::InetAddress &peerAddr)
+void newConnection(int sockfd, const muduo::InetAddress &peerAddr)
 {
     printf("newConnection(): accepted a new connection from %s\n",
            peerAddr.toHostPort().c_str());
@@ -16,10 +16,10 @@ int main()
 {
     printf("main(): pid = %d\n", getpid());
 
-    webs::InetAddress listenAddr(9980);
-    webs::EventLoop loop;
+    muduo::InetAddress listenAddr(9980);
+    muduo::EventLoop loop;
 
-    webs::Acceptor acceptor(&loop, listenAddr);
+    muduo::Acceptor acceptor(&loop, listenAddr);
 
     acceptor.setNewConnectionCallback(newConnection);
 

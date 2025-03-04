@@ -13,7 +13,7 @@ void threadFunc()
 }
 int main()
 {
-    webs::EventLoop loop;
+    muduo::EventLoop loop;
     g_loop = &loop;
     muduo::Thread t(threadFunc);
     t.start();

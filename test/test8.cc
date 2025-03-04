@@ -3,7 +3,7 @@
 #include "../src/InetAddress.h"
 #include <stdio.h>
 
-void onConnection(const webs::TcpConnectionPtr &conn)
+void onConnection(const muduo::TcpConnectionPtr &conn)
 {
     if (conn->connected())
     {
@@ -18,8 +18,8 @@ void onConnection(const webs::TcpConnectionPtr &conn)
     }
 }
 
-void onMessage(const webs::TcpConnectionPtr &conn,
-               const char *data,
+void onMessage(const muduo::TcpConnectionPtr &conn,
+               muduo::Buffer *data,
                ssize_t len)
 {
     printf("onMessage(): received %zd bytes from connection [%s]\n",
@@ -30,10 +30,10 @@ int main()
 {
     printf("main(): pid = %d\n", getpid());
 
-    webs::InetAddress listenAddr(9981);
-    webs::EventLoop loop;
+    muduo::InetAddress listenAddr(9981);
+    muduo::EventLoop loop;
 
-    webs::TcpServer server(&loop, listenAddr);
+    muduo::TcpServer server(&loop, listenAddr);
     server.setConnectionCallback(onConnection);
     server.setMessageCallback(onMessage);
     server.start();

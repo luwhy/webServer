@@ -13,7 +13,7 @@ namespace muduo
     typedef std::function<void(const TcpConnectionPtr &)> ConnectionCallback;
     typedef std::function<void(const TcpConnectionPtr &,
                                Buffer *buf,
-                               muduo::Timestamp)>
+                               Timestamp)>
         MessageCallback;
 
     typedef std::function<void(const TcpConnectionPtr &)> CloseCallback;
