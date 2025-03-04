@@ -2,17 +2,17 @@
 #include "EventLoop.h"
 #include <poll.h>
 #include "sylar/log.h"
-namespace webs
+namespace muduo
 {
     sylar::Logger::ptr g_logger_c = SYLAR_LOG_NAME("system");
     const int Channel::kNoneEvent = 0;
     const int Channel::kReadEvent = POLLIN | POLLPRI;
-    webs::Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
-                                                      fd_(fd),
-                                                      events_(0),
-                                                      revents_(0),
-                                                      index_(-1),
-                                                      eventHandling_(false)
+    muduo::Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
+                                                       fd_(fd),
+                                                       events_(0),
+                                                       revents_(0),
+                                                       index_(-1),
+                                                       eventHandling_(false)
     {
     }
 

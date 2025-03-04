@@ -2,7 +2,7 @@
 #define _INET_ADDRESS_H_
 #include <netinet/in.h>
 #include <string>
-namespace webs
+namespace muduo
 {
     class InetAddress
     {

@@ -4,7 +4,7 @@
 #include "sylar/log.h"
 #include "EventLoop.h"
 #include "base/Timestamp.h"
-namespace webs
+namespace muduo
 {
     class Channel : public std::enable_shared_from_this<Channel>
     {
@@ -16,7 +16,10 @@ namespace webs
         ~Channel();
 
         void handleEvent(muduo::Timestamp receiveTime);
-        void setReadCallback(const ReadEventCallback &cb) { this->readCallback_ = cb; }
+        void setReadCallback(const ReadEventCallback &cb)
+        {
+            this->readCallback_ = cb;
+        }
         void setWriteCallback(const EventCallback &cb) { this->writeCallback_ = cb; }
         void setErrorCallback(const EventCallback &cb) { this->errorCallback_ = cb; }
         void setCloseCallback(const EventCallback &cb) { this->closeCallback_ = cb; }

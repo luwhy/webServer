@@ -4,7 +4,7 @@
 #include "SocketsOps.h"
 #include <functional>
 
-namespace webs
+namespace muduo
 {
     Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr) : loop_(loop),
                                                                          acceptSocket_(sockets::createNonBlockingOrDie()),

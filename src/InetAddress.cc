@@ -3,7 +3,7 @@
 #include <strings.h>
 
 #include <boost/static_assert.hpp>
-namespace webs
+namespace muduo
 {
     static const in_addr_t kInaddrAny = INADDR_ANY;
 
