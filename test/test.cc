@@ -1,7 +1,7 @@
 #include "../src/EventLoop.h"
 #include "../src/base/Thread.h"
 #include <stdio.h>
-webs::EventLoop *g_loop;
+muduo::EventLoop *g_loop;
 
 void print()
 {
