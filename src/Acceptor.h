@@ -10,7 +10,7 @@ namespace muduo
     class Acceptor
     {
     public:
-        typedef std::function<void(int sockfd, const InetAddress)> NewConnnectionCallback;
+        typedef std::function<void(int sockfd, const InetAddress &)> NewConnnectionCallback;
         Acceptor(EventLoop *loop, const InetAddress &listenAddr);
         Acceptor(const Acceptor &a) = delete;
 

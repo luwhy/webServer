@@ -86,5 +86,10 @@ namespace muduo
     }
     void TcpConnection::handleWrite()
     {
+        loop_->assertInLoopThread();
+        if (channel_->isWriting())
+        {
+            // ssize_t n = ::write(channel_->fd());
+        }
     }
 }

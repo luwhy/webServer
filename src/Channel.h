@@ -49,8 +49,25 @@ namespace muduo
             update();
         }
 
+        void enableWriting()
+        {
+            events_ |= kWriteEvent;
+            update();
+        }
+
+        void disableWriting()
+        {
+            events_ &= ~kWriteEvent;
+            update();
+        }
+        bool isWriting() const
+        {
+            return events_ & kWriteEvent;
+        }
+
     private:
-        void update();
+        void
+        update();
         static const int kNoneEvent;
         static const int kReadEvent;
         static const int kWriteEvent;

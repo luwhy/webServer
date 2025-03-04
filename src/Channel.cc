@@ -2,11 +2,13 @@
 #include "EventLoop.h"
 #include <poll.h>
 #include "sylar/log.h"
+#include "Logging.h"
 namespace muduo
 {
-    sylar::Logger::ptr g_logger_c = SYLAR_LOG_NAME("system");
+
     const int Channel::kNoneEvent = 0;
     const int Channel::kReadEvent = POLLIN | POLLPRI;
+    const int Channel::kWriteEvent = POLLOUT;
     muduo::Channel::Channel(EventLoop *loop, int fd) : loop_(loop),
                                                        fd_(fd),
                                                        events_(0),
@@ -25,10 +27,10 @@ namespace muduo
     {
         eventHandling_ = true;
         if (revents_ & POLLNVAL)
-            SYLAR_LOG_WARN(g_logger_c) << "Channel::handle_event() POLLNVAL";
+            SYLAR_LOG_WARN(g_logger_src) << "Channel::handle_event() POLLNVAL";
         if ((revents_ & POLLHUP) && !(revents_ & POLLIN))
         {
-            SYLAR_LOG_WARN(g_logger_c) << "Channel::handle_event() POLLHUP";
+            SYLAR_LOG_WARN(g_logger_src) << "Channel::handle_event() POLLHUP";
             if (closeCallback_)
                 closeCallback_();
         }

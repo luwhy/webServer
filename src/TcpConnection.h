@@ -75,6 +75,7 @@ namespace muduo
         CloseCallback closeCallback_;
 
         Buffer inputBuffer_;
+        Buffer outputBuffer_;
 
     private:
         void setState(StateE s) { state_ = s; }

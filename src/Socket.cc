@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <strings.h>
+#include "Logging.h"
 namespace muduo
 {
     Socket::Socket(int sockfd) : fd_(sockfd)
@@ -15,6 +16,7 @@ namespace muduo
     }
     void Socket::bindAddress(const InetAddress &localaddr)
     {
+        SYLAR_LOG_DEBUG(g_logger_src) << "fd: " << fd_ << be16toh(localaddr.getSockAddrInet().sin_port);
         sockets::bindOrDie(fd_, localaddr.getSockAddrInet());
     }
     void Socket::listen()
@@ -26,8 +28,10 @@ namespace muduo
         struct sockaddr_in addr;
         bzero(&addr, sizeof(addr));
         int connd = sockets::accept(fd_, &addr);
+        SYLAR_LOG_DEBUG(g_logger_src) << " cond " << connd;
         if (connd > 0)
         {
+            SYLAR_LOG_DEBUG(g_logger_src) << "socket::accept::peeraddr::port " << peeraddr->toHostPort() << " " << peeraddr->getSockAddrInet().sin_addr.s_addr;
             peeraddr->setSockAddrInet(addr);
         }
         return connd;

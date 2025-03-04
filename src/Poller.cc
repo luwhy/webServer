@@ -41,6 +41,12 @@ namespace muduo
         }
         return now;
     }
+
+    /**
+     * @brief Z
+     *
+     * @param channel
+     */
     void Poller::updateChannel(std::shared_ptr<Channel> channel)
     {
         assertInLoopThread();
@@ -75,6 +81,7 @@ namespace muduo
             }
         }
     }
+
     void Poller::removeChannel(std::shared_ptr<Channel> channel)
     {
         assertInLoopThread();

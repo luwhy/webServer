@@ -1,8 +1,13 @@
 #include "Buffer.h"
 namespace muduo
 {
-    Buffer::Buffer()
+    Buffer::Buffer() : buffer_(kCheapPrepend + kInitialSize),
+                       readIndex_(kCheapPrepend),
+                       writeIndex_(kCheapPrepend)
     {
+        assert(readableBytes() == 0);
+        assert(writableBytes() == kInitialSize);
+        assert(prependableBytes() == kCheapPrepend);
     }
 
     Buffer::~Buffer()
