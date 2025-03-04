@@ -79,7 +79,7 @@ namespace webs
     private:
         void setState(StateE s) { state_ = s; }
 
-        void handleRead(Timestamp receiveTime);
+        void handleRead(muduo::Timestamp receiveTime);
 
         void handleClose();
 

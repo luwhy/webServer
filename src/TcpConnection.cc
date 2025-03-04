@@ -58,7 +58,7 @@ namespace webs
      * @brief read回调
      *
      */
-    void TcpConnection::handleRead(Timestamp receiveTime)
+    void TcpConnection::handleRead(muduo::Timestamp receiveTime)
     {
         int savedErrno = 0;
         // ssize_t n = ::read(channel_->fd(), buf, sizeof buf);

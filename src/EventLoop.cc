@@ -71,7 +71,7 @@ namespace webs
             // 处理事件
             for (ChannelList::iterator it = activChannels_.begin(); it != activChannels_.end(); ++it)
             {
-                it->get()->handleEvent();
+                it->get()->handleEvent(pollReturnTime_);
             }
             dopendingFunctors();
         }

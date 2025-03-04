@@ -21,7 +21,7 @@ namespace webs
         assert(!eventHandling_);
     }
     // 根据revents_的值分别调用不同回调
-    void Channel::handleEvent()
+    void Channel::handleEvent(muduo::Timestamp receiveTime)
     {
         eventHandling_ = true;
         if (revents_ & POLLNVAL)
@@ -43,7 +43,7 @@ namespace webs
         {
             if (readCallback_)
             {
-                readCallback_();
+                readCallback_(receiveTime);
             }
         }
         if (revents_ & POLLOUT)

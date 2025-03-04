@@ -15,7 +15,7 @@ namespace webs
         Channel(Channel &c) = delete;
         ~Channel();
 
-        void handleEvent();
+        void handleEvent(muduo::Timestamp receiveTime);
         void setReadCallback(const ReadEventCallback &cb) { this->readCallback_ = cb; }
         void setWriteCallback(const EventCallback &cb) { this->writeCallback_ = cb; }
         void setErrorCallback(const EventCallback &cb) { this->errorCallback_ = cb; }
