@@ -42,7 +42,14 @@ namespace muduo
         {
             return readIndex_;
         }
-
+        /**
+         * @brief在Buffer类的swap函数中，可以直接访问rhs.readIndex_和rhs.writeIndex_，因为：
+            swap是Buffer类的成员函数。
+            C++的访问控制是基于类的作用域，而不是对象的作用域。
+            这种设计允许类的成员函数操作同类对象的内部状态，同时仍然保护封装性。
+         *
+         * @param rhs
+         */
         void swap(Buffer &rhs)
         {
             buffer_.swap(rhs.buffer_);
